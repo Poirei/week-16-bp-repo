@@ -237,6 +237,7 @@ function UsersMenuList() {
     </MenuList>
   );
 }
+
 function AuxMenuList() {
   const theme = useCustomTheme();
   const { openSettings } = usePopoverContext();

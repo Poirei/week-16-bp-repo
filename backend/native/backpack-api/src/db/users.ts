@@ -194,8 +194,10 @@ export const getUserByUsername = async (username: string) => {
       },
     ],
   });
+
+  console.log("user", response.auth_users[0]);
   if (!response.auth_users[0]) {
-    throw new Error("user not found");
+    throw new Error("user not found!");
   }
   return transformUser(response.auth_users[0]);
 };
@@ -302,6 +304,8 @@ const transformUser = (
  */
 export const createUser = async (
   username: string,
+  firstName: string,
+  lastName: string,
   blockchainPublicKeys: Array<{ blockchain: Blockchain; publicKey: string }>,
   waitlistId?: string | null,
   referrerId?: string
@@ -329,6 +333,8 @@ export const createUser = async (
       {
         object: {
           username: username,
+          firstname: firstName,
+          lastname: lastName,
           public_keys: {
             data: blockchainPublicKeys.map((b) => ({
               blockchain: b.blockchain,
@@ -461,6 +467,59 @@ export async function createUserPublicKey({
 
   return response.insert_auth_public_keys_one;
 }
+
+/**
+ * Fetch user info
+ */
+export const fetchUserPersonalInfo = async (userId: string) => {
+  const response = await chain("query")({
+    auth_users: [
+      {
+        where: {
+          id: { _eq: userId },
+        },
+      },
+      {
+        id: true,
+        firstname: true,
+        lastname: true,
+      },
+    ],
+  });
+
+  return {
+    firstname: response.auth_users[0].firstname,
+    lastname: response.auth_users[0].lastname,
+  };
+};
+
+/**
+ * Update personal info
+ */
+export const updatePersonalInfo = async (
+  userId: string,
+  firstName: string,
+  lastName: string
+) => {
+  const response = await chain("mutation")({
+    update_auth_users: [
+      {
+        where: {
+          id: { _eq: userId },
+        },
+        _set: {
+          firstname: firstName,
+          lastname: lastName,
+        },
+      },
+      {
+        affected_rows: true,
+      },
+    ],
+  });
+
+  return response.update_auth_users;
+};
 
 /**
  * Update avatar_nft of a user.

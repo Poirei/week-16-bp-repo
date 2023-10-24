@@ -20,6 +20,7 @@ export function useBackgroundKeepAlive() {
   const bg = useBackgroundClient();
   useEffect(() => {
     const interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       bg.request({
         method: UI_RPC_METHOD_KEYRING_STORE_KEEP_ALIVE,
         params: [],

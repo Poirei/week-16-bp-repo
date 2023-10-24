@@ -13,7 +13,7 @@ import { ContactRequests, Contacts } from "../Messages/Contacts";
 import { Requests } from "../Messages/Requests";
 
 import { CreateMenu } from "./AddConnectWallet/CreateMenu";
-import { CreateMnemonic } from "./AddConnectWallet/CreateMnemonic"
+import { CreateMnemonic } from "./AddConnectWallet/CreateMnemonic";
 import { ImportMenu } from "./AddConnectWallet/ImportMenu";
 import { ImportMnemonic } from "./AddConnectWallet/ImportMnemonic";
 import { ImportSecretKey } from "./AddConnectWallet/ImportSecretKey";
@@ -40,6 +40,7 @@ import {
   ShowRecoveryPhrase,
   ShowRecoveryPhraseWarning,
 } from "./YourAccount/ShowRecoveryPhrase";
+import { UpdatePersonalInfo } from "./YourAccount/UpdatePersonalInfo";
 import { AboutBackpack } from "./AboutBackpack";
 import { AddConnectPreview, AddConnectWalletMenu } from "./AddConnectWallet";
 import { Preferences } from "./Preferences";
@@ -93,6 +94,10 @@ export function SettingsNavStackDrawer({
           <NavStackScreen
             name="your-account"
             component={(props: any) => <YourAccount {...props} />}
+          />
+          <NavStackScreen
+            name="update-personal-info"
+            component={(props: any) => <UpdatePersonalInfo {...props} />}
           />
           <NavStackScreen
             name="preferences"
@@ -151,6 +156,10 @@ export function SettingsNavStackDrawer({
           <NavStackScreen
             name="change-password"
             component={(props: any) => <ChangePassword {...props} />}
+          />
+          <NavStackScreen
+            name="update-personal-info"
+            component={(props: any) => <UpdatePersonalInfo {...props} />}
           />
           <NavStackScreen
             name="reset"

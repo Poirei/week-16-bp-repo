@@ -22,6 +22,7 @@ import {
   createUser,
   createUserPublicKey,
   deleteUserPublicKey,
+  fetchUserPersonalInfo,
   getReferrer,
   getUser,
   getUserByPublicKeyAndChain,
@@ -30,6 +31,7 @@ import {
   getUsersByPrefix,
   getUsersByPublicKeys,
   getUsersMetadata,
+  updatePersonalInfo,
   updateUserAvatar,
 } from "../../db/users";
 import { getOrcreateXnftSecret } from "../../db/xnftSecrets";
@@ -124,7 +126,7 @@ router.get("/jwt/xnft", extractUserId, async (req, res) => {
  * Create a new user.
  */
 router.post("/", async (req, res) => {
-  const { username, waitlistId, blockchainPublicKeys } =
+  const { username, firstName, lastName, waitlistId, blockchainPublicKeys } =
     CreateUserWithPublicKeys.parse(req.body);
 
   // Validate all the signatures
@@ -182,6 +184,8 @@ router.post("/", async (req, res) => {
 
   const user = await createUser(
     username,
+    firstName,
+    lastName,
     blockchainPublicKeys.map((b) => ({
       ...b,
       // Cast blockchain to correct type
@@ -411,6 +415,39 @@ router.post(
     });
 
     return res.json({});
+  }
+);
+
+/**
+ * Get the personal info for the user
+ */
+router.get("/metadata", extractUserId, async (req: Request, res: Response) => {
+  const userId = req.id as string;
+
+  const metadata = await fetchUserPersonalInfo(userId);
+
+  console.log(metadata);
+
+  res.json({
+    firstName: metadata.firstname,
+    lastName: metadata.lastname,
+  });
+});
+
+/**
+ * Update the personal info for the user
+ */
+router.put(
+  "/updateInfo",
+  extractUserId,
+  async (req: Request, res: Response) => {
+    const userId = req.id!;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+
+    await updatePersonalInfo(userId, firstName, lastName);
+
+    res.json({});
   }
 );
 
